@@ -66,7 +66,34 @@ Edit `script/capture_and_stream.py`:
 vercel login
 vercel deploy --prod
 ```
-If WebSockets aren't stable:
+Current `vercel.json` uses the legacy `builds` array with the `@vercel/python` builder:
+```json
+{
+	"version": 2,
+	"builds": [{ "src": "api/index.py", "use": "@vercel/python" }],
+	"routes": [
+		{ "src": "/ws/(producer|viewer)", "dest": "/api/index.py" },
+		{ "src": "/(.*)", "dest": "/api/index.py" }
+	]
+}
+```
+This resolves the build error: `Function Runtimes must have a valid version` which was triggered by an invalid `functions` runtime specification. 
+
+⚠ WebSocket Limitation: Vercel's Python serverless functions do not maintain truly persistent WebSocket connections (they are designed for short-lived request handling). Even if deployment succeeds, long-running streaming sessions may disconnect or never upgrade properly. For production real-time streaming, prefer one of:
+1. Host FastAPI (with native WebSockets) on Render, Fly.io, Railway, or a small VPS.
+2. Serve only a static/Next.js viewer page on Vercel that connects to the external domain (e.g., `wss://your-fastapi-host/ws/viewer`).
+3. Use a managed real-time layer (Ably, Pusher, Socket.IO service) and let the capture script publish frames there; browser subscribes directly.
+
+Suggested Split Architecture:
+```
+Producer (desktop) --wss--> FastAPI server (Render/Fly) --fan-out--> Viewers
+															 ^
+															 |
+											Static viewer page (Vercel)
+```
+Update `script/capture_and_stream.py` to point `SERVER_URL` explicitly to the external FastAPI host; keep Vercel for the viewer UX only.
+
+If WebSockets aren't stable on Vercel:
 - Switch to an external WebSocket gateway (e.g., Ably, Pusher) and have the FastAPI function only perform signaling / auth.
 - Or migrate the FastAPI app to a platform with persistent ASGI support.
 
