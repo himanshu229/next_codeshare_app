@@ -1,9 +1,8 @@
 {
   "functions": {
     "api/index.py": {
-      "runtime": "python3.11",
-      "maxDuration": 10,
-      "memory": 2048
+      "runtime": "python@3.11",
+      "maxDuration": 10
     }
   },
   "routes": [
