@@ -16,7 +16,7 @@ import traceback
 # CONFIGURABLE: Set this to your deployed FastAPI WebSocket producer endpoint
 # For local development, use: "ws://127.0.0.1:8000/ws/producer"
 # For production (Vercel), use: "wss://your-domain.vercel.app/ws/producer"
-SERVER_URL = ""  # Change this to your Vercel URL or keep empty for local
+SERVER_URL = "https://next-codeshare-app.vercel.app"  # Change this to your Vercel URL or keep empty for local
 LOCAL_SERVER = "127.0.0.1:8000"
 
 # Auto-detect WebSocket URL based on server configuration

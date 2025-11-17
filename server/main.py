@@ -58,7 +58,11 @@ function hideOverlay() {
 console.log('Starting WebSocket connection...');
 setStatus('connecting...');
 
-const ws = new WebSocket('ws://127.0.0.1:8000/ws/viewer');
+// Dynamically build WebSocket URL so it works in local dev and production deployments.
+const WS_BASE = (location.protocol === 'https:' ? 'wss://' : 'ws://') + location.host;
+const WS_URL = WS_BASE + '/ws/viewer';
+console.log('Connecting to viewer WS:', WS_URL);
+const ws = new WebSocket(WS_URL);
 ws.binaryType = 'arraybuffer';
 
 ws.onopen = function() {
