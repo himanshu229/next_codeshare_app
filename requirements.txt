@@ -1,0 +1,6 @@
+fastapi>=0.111.0,<0.113.0
+uvicorn[standard]>=0.30.0,<0.32.0
+mss>=9.0.1,<10.0.0
+# Pillow: allow latest for Python 3.13; will build from source if wheel unavailable.
+Pillow>=10.3.0
+websocket-client>=1.7.0,<2.0.0
